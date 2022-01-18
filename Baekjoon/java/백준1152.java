@@ -1,8 +1,8 @@
-package start01;
+package java;
 
 import java.util.Scanner;
 
-public class 단어의개수 {
+public class 백준1152 {
 	public static void main(String[] args) {
 		int spc = 0;
 		Scanner sc = new Scanner(System.in);
