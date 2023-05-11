@@ -1,31 +1,33 @@
-import java.util.LinkedList; //import
-import java.util.Queue; //import
+import java.util.Queue;
+import java.util.LinkedList;
+import java.util.ArrayList;
+
 class Solution {
     public int[] solution(int[] progresses, int[] speeds) {
-        int cnt = 0;
-        int idx = 0;
-        int[] answer = {};
-        Queue<Integer> queue = new LinkedList<>();
-        
-        while(idx < progresses.length){
-            int tmp = 0;
-            cnt = (100-progresses[idx] + speeds[idx] - 1)/speeds[idx];
-            for(int i = idx; i < progresses.length; i++){
-                if(progresses[i] + speeds[i] * cnt < 100){
-                    break;
-                } else {
-                    tmp++;
-                    idx++;
-                }
-            }
-            queue.add(tmp);
+        Queue<Integer> work = new LinkedList<>();
+        int len = progresses.length;
+        for(int i = 0; i < len; i++) {
+            work.add((100-progresses[i] + speeds[i] - 1) / speeds[i]);
         }
-            int size = queue.size();
-            answer = new int[size];
-            for(int s = 0; s < size; s++){
-                answer[s] = queue.poll();
+        ArrayList<Integer> res = new ArrayList<>();
+        int num = 0;
+        int cnt = 0;
+        while(work.size() > 0) {
+            int tmp = work.poll();
+            if(num < tmp) {
+                num = tmp;
+                if(cnt != 0)
+                    res.add(cnt);
+                cnt = 1;
+            } else {
+                cnt++;
             }
-            return answer;
-        
+        }
+        res.add(cnt);
+        int[] answer = new int[res.size()];
+        int i = 0;
+        for(int number : res)
+            answer[i++] = number;
+        return answer;
     }
 }
