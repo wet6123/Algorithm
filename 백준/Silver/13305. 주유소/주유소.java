@@ -7,8 +7,8 @@ public class Main {
 
 		int T = sc.nextInt();
 
-		int[] road = new int[T - 1];
-		int[] price = new int[T];
+		long[] road = new long[T - 1];
+		long[] price = new long[T];
 
 		for (int tc = 0; tc < T - 1; tc++) {
 			road[tc] = sc.nextInt();
@@ -17,9 +17,9 @@ public class Main {
 			price[tc] = sc.nextInt();
 		}
 
-		int total = 0;
+		long total = 0;
 
-		int now = price[0];
+		long now = price[0];
 		int idx = 0;
 		while (idx < T - 1) {
 			if (now > price[idx]) {
