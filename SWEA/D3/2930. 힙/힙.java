@@ -1,65 +1,74 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
+//힙 배열로 구현
 public class Solution {
-   public static void main(String[] args) {
-      Scanner sc = new Scanner(System.in);
-      int T = sc.nextInt();
-      StringBuilder sb = new StringBuilder();
-      for (int tc = 1; tc <= T; tc++) {
-         sb.append("#").append(tc).append(" ");
-         int N = sc.nextInt();
-         int[] arr = new int[N+1];
-         int cur = 1;
-         
-         for (int i = 0; i < N; i++) {
-            int x = sc.nextInt();//1인지 2인지
-            if (x==1) {
-               int num = sc.nextInt();
-               arr[cur]=num; //일단 숫자 넣음
-               //비교
-               int iter = cur;
-               while(true) {
-                  if(iter>1 && arr[iter/2]<arr[iter]) {
-                     swap(arr,iter/2,iter);
-                     iter = iter/2;
-                  }else {
-                     break;
-                  }
-               }
-               cur++;
-            }else {
-               if(cur==1) {
-                  sb.append(-1).append(" ");
-               }else {
-                  sb.append(arr[1]).append(" ");
-                  arr[1] = arr[--cur];                  
-                  int iter = 1;
-                  int child = iter*2;
-                  if( child + 1 < cur && arr[child] < arr[child+1])
-                        child = child+1;
-                  while(true) {
-                     if(child < cur && arr[iter]<arr[child]) {
-                        swap(arr,iter,child);
-                        iter = child;
-                        child = iter * 2;
-                        if( child + 1 < cur && arr[child] < arr[child+1])
-                              child = child+1;
-                     }else {
-                        break;
-                     }
-                  }
-               }
-            }
-         }
-         sb.append("\n");
-      }
-      System.out.println(sb);
-   }
-   
-   public static void swap(int[] arr, int i , int j) {
-      int tmp = arr[i];
-      arr[i] = arr[j];
-      arr[j]= tmp;
-   }
-
+	static int[] arr; 
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		
+		int T = sc.nextInt();
+		for(int tc = 0; tc < T; tc++) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("#");
+			sb.append(tc+1);
+			sb.append(" ");
+			
+			int N = sc.nextInt();
+			arr = new int[N];
+			int length = 0;
+			for(int n = 0; n < N; n++) {
+				int order = sc.nextInt();
+				if (order == 1) {
+					arr[++length] = sc.nextInt();
+					sort(arr, length);
+					
+				} else {
+					if(length == 0)
+						sb.append(-1 + " ");
+					else {
+						sb.append(arr[1] + " ");
+						arr[1] = arr[length];
+						arr[length] = 0; //삭제할것
+						sortDel(arr, 1, --length);
+					}
+					
+				}
+			}
+			System.out.println(sb);
+		}
+	}
+	public static void sort(int[] arr, int place) {
+		if(place == 1 || arr[place/2] >= arr[place]) {
+			return;
+		}
+		
+		if(arr[place/2] < arr[place]) {
+			int temp = arr[place/2];
+			arr[place/2] = arr[place];
+			arr[place] = temp;
+			sort(arr, place/2);
+		}
+	}
+	public static void sortDel(int[] arr, int place, int length) {
+		if(place*2 > length || arr[place*2] <= arr[place]) {
+			if(place*2+1 > length || arr[place*2+1] <= arr[place]) {
+				return;
+			}
+		}
+		
+		int p;
+		if(arr[place*2] > arr[place*2+1]) {			
+			p = place*2;
+		}
+		else {		
+			p = place*2 + 1;
+		}
+		if(arr[p] > arr[place]) {
+			int temp = arr[p];
+			arr[p] = arr[place];
+			arr[place] = temp;
+			sortDel(arr, p, length);
+		}
+	}
 }
