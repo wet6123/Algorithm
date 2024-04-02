@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.Scanner;
 
 //조교의 성적 매기기
@@ -21,12 +20,12 @@ public class Solution {
 				for(int k = 0; k < j; k++) {
 					if(arr[idx]<arr[k])idx = k;
 				}
+				if(Score == arr[idx]) {
+					System.out.printf("#%d %s\n", i+1, grade[9-(int)j/(N/10)]);
+				}
 				double tmp = arr[idx];
 				arr[idx] = arr[j];
-				arr[j] = tmp;
-				if(Score == arr[j]) {
-					System.out.printf("#%d %s\n", i+1, grade[9-(j/(N/10))]);
-				}
+				arr[j] = arr[idx];
 			}
 		}
 	}
