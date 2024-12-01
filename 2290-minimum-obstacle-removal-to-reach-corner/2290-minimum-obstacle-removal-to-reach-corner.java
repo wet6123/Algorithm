@@ -20,34 +20,35 @@ class Solution {
         q.add(new int[] {0, 0});
         cnt_map[0][0] = 0;
 
-        while(q.size() > 0) {
-            int[] coor = q.remove();
-            int coor_y = coor[0];
-            int coor_x = coor[1];
-            int cnt = cnt_map[coor_y][coor_x];
+        while(true) {
+            while(q.size() > 0) {
+                int[] coor = q.remove();
+                int coor_y = coor[0];
+                int coor_x = coor[1];
+                int cnt = cnt_map[coor_y][coor_x];
 
-            if (coor_x == x - 1 && coor_y == y)
-                break;
+                for(int i = 0; i < 4; i++) {
+                    int cur_y = coor_y + dy[i];
+                    int cur_x = coor_x + dx[i];
 
-            for(int i = 0; i < 4; i++) {
-                int cur_y = coor_y + dy[i];
-                int cur_x = coor_x + dx[i];
+                    if (cur_x < 0 || cur_x >= x || cur_y < 0 || cur_y >= y)
+                        continue;
 
-                if (cur_x < 0 || cur_x >= x || cur_y < 0 || cur_y >= y)
-                    continue;
-
-                if (grid[cur_y][cur_x] == 0) {
-                    if (cnt_map[cur_y][cur_x] > cnt) {
-                        cnt_map[cur_y][cur_x] = cnt;
-                        q.add(new int[] {cur_y, cur_x});
-                    }
-                } else {
-                    if (cnt_map[cur_y][cur_x] > cnt + 1) {
-                        cnt_map[cur_y][cur_x] = cnt + 1;
-                        q.add(new int[] {cur_y, cur_x});
+                    if (grid[cur_y][cur_x] == 0) {
+                        if (cnt_map[cur_y][cur_x] > cnt) {
+                            cnt_map[cur_y][cur_x] = cnt;
+                            q.add(new int[] {cur_y, cur_x});
+                        }
+                    } else {
+                        if (cnt_map[cur_y][cur_x] > cnt + 1) {
+                            cnt_map[cur_y][cur_x] = cnt + 1;
+                            q.add(new int[] {cur_y, cur_x});
+                        }
                     }
                 }
             }
+            if (cnt_map[y - 1][x - 1] != Integer.MAX_VALUE)
+                break;
         }
 
         // for(int i = 0; i < y; i++) {
