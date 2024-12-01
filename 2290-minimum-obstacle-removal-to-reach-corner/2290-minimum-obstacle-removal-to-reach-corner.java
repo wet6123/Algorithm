@@ -26,6 +26,9 @@ class Solution {
             int coor_x = coor[1];
             int cnt = cnt_map[coor_y][coor_x];
 
+            if (coor_x == x - 1 && coor_y == y)
+                break;
+
             for(int i = 0; i < 4; i++) {
                 int cur_y = coor_y + dy[i];
                 int cur_x = coor_x + dx[i];
