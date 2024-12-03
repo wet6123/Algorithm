@@ -2,10 +2,10 @@ class Solution {
     public int minimumSize(int[] nums, int maxOperations) {
         int ans = Integer.MAX_VALUE;
         int start = 1;
-        int end = 0;
+        int end = 1000000000;
 
-        for(int num : nums)
-            end = Math.max(num, end);
+        // for(int num : nums)
+        //     end = Math.max(num, end);
 
         int numOfBags = nums.length + maxOperations;
 
