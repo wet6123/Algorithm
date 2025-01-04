@@ -1,20 +1,32 @@
+import java.util.*;
+
+class Node {
+    int dest;
+    int weight;
+    
+    Node(int dest, int weight) {
+        this.dest = dest;
+        this.weight = weight;
+    }
+}
+
 class Solution {
     static int[] d;
     static boolean[] v;
-    static int[][] map;
+    static ArrayList<Node>[] map;
     public int solution(int n, int s, int a, int b, int[][] fares) {
-        map = new int[n][n];
+        map = new ArrayList[n];
         for(int i = 0; i < n; i++) {
-            for(int j = 0; j < n; j++) {
-                map[i][j] = 100000000;
-            }
+            map[i] = new ArrayList<>();
         }
+        
         for(int i = 0; i < fares.length; i++) {
-            int idx_1 = fares[i][0] - 1;
-            int idx_2 = fares[i][1] - 1;
+            int start = fares[i][0] - 1;
+            int end = fares[i][1] - 1;
             int fare = fares[i][2];
-            map[idx_1][idx_2] = fare;
-            map[idx_2][idx_1] = fare;
+            
+            map[start].add(new Node(end, fare));
+            map[end].add(new Node(start, fare));
         }
         
         int[] ds = Daijkstra(n, s - 1);
@@ -35,37 +47,27 @@ class Solution {
     public int[] Daijkstra(int n, int start) {
         d = new int[n];
         v = new boolean[n];
-        
-        for(int i = 0; i < n; i++) {
-            d[i] = map[start][i];
-        }
-        
+        Arrays.fill(d, (int)1e8);
         d[start] = 0;
         v[start] = true;
-        for(int i = 0; i < n - 2; i++) {
-            int index = getSmallIndex(n);
-            v[index] = true;
-            for(int j = 0; j < n; j++) {
-                if (!v[j]) {
-                    if (d[index] + map[index][j] < d[j]) {
-                        d[j] = d[index] + map[index][j];
-                    }
+        
+        PriorityQueue<Node> pq = new PriorityQueue<>((a, b) -> a.weight - b.weight);
+        pq.offer(new Node(start, 0));
+        
+        while(!pq.isEmpty()) {
+            Node current = pq.poll();
+            int now = current.dest;
+            int fare = current.weight;
+            
+            if (d[now] < fare) continue;
+            
+            for(Node node : map[now]) {
+                if(fare + node.weight < d[node.dest]) {
+                    d[node.dest] = fare + node.weight;
+                    pq.offer(new Node(node.dest, fare + node.weight));
                 }
             }
         }
-        
         return d;
-    }
-    
-    public int getSmallIndex(int n) {
-        int min = Integer.MAX_VALUE;
-        int index = 0;
-        for(int i = 0; i < n; i++) {
-            if (d[i] < min && !v[i]) {
-                min = d[i];
-                index = i;
-            }
-        }
-        return index;
     }
 }
