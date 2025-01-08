@@ -1,8 +1,8 @@
 import java.util.HashMap;
 
 class Solution {
-    static HashMap<String, Integer> map = new HashMap<>();
     public int[] solution(String[] gems) {
+        HashMap<String, Integer> map = new HashMap<>();
         int min = Integer.MAX_VALUE;
         int ansStart = 0;
         int ansEnd = 0;
@@ -40,13 +40,4 @@ class Solution {
         
         return new int[] {ansStart + 1, ansEnd + 1};
     }
-    
-    // public boolean checkPossible() {
-    //     for(Integer value : map.values()) {
-    //         if (value <= 0) {
-    //             return false;
-    //         }
-    //     }
-    //     return true;
-    // }
 }
