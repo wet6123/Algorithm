@@ -1,67 +1,68 @@
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Scanner;
+import java.util.*;
+import java.lang.*;
+import java.io.*;
 
-//도시 분할 계획
-public class Main {
-	static int[] p;
+class Node {
+    int idx;
+    int weight;
 
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
+    Node (int idx, int weight) {
+        this.idx = idx;
+        this.weight = weight;
+    }
+}
 
-		int N = sc.nextInt();
-		int M = sc.nextInt();
-		int[][] edges = new int[M][3];
-		for (int j = 0; j < M; j++) {
-			edges[j][0] = sc.nextInt();
-			edges[j][1] = sc.nextInt();
-			edges[j][2] = sc.nextInt();
-		}
+class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-		Arrays.sort(edges, new Comparator<int[]>() {
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
 
-			@Override
-			public int compare(int[] o1, int[] o2) {
-				// TODO Auto-generated method stub
-				return o1[2] - o2[2];
-			}
+        ArrayList<Node>[] list = new ArrayList[N + 1];
+        for(int i = 0; i <= N; i++) {
+            list[i] = new ArrayList<>();
+        }
+        
+        boolean[] visited = new boolean[N + 1];
 
-		});
+        for(int i = 0; i < M; i++) {
+            st = new StringTokenizer(br.readLine());
+            int A = Integer.parseInt(st.nextToken());
+            int B = Integer.parseInt(st.nextToken());
+            int W = Integer.parseInt(st.nextToken());
 
-		p = new int[N + 1];
+            list[A].add(new Node(B, W));
+            list[B].add(new Node(A, W));
+        }
 
-		for (int i = 0; i < N; i++) {
-			makeSet(i);
-		}
+        PriorityQueue<Node> pq = new PriorityQueue<>((a, b) -> a.weight - b.weight);
+        pq.offer(new Node(1, 0));
+        int dist = 0;
+        int max = 0;
 
-		int cnt = 0;
-		int ans = 0;
-		for (int i = 0; i < M; i++) {
-			int px = findSet(edges[i][0]);
-			int py = findSet(edges[i][1]);
+        while(!pq.isEmpty()) {
+            Node current = pq.poll();
+            int currentIdx = current.idx;
+            int currentWeight = current.weight;
 
-			if (px != py) {
-				union(px, py);
-				ans += edges[i][2];
-				cnt++;
-			}
-			if (cnt == N - 2)
-				break;
-		}
-		System.out.println(ans);
-	}
+            if (visited[currentIdx]) continue;
+            
+            visited[currentIdx] = true;
 
-	static void makeSet(int i) {
-		p[i] = i;
-	}
+            max = Math.max(max, currentWeight);
 
-	static int findSet(int i) {
-		if (p[i] != i)
-			p[i] = findSet(p[i]);
-		return p[i];
-	}
+            dist += currentWeight;
 
-	static void union(int i, int j) {
-		p[findSet(j)] = findSet(i);
-	}
+            for(Node next : list[currentIdx]) {
+                if (visited[next.idx] == false) {
+                    pq.offer(new Node(next.idx, next.weight));
+                }
+            }
+        }
+        bw.write((dist - max) + "\n");
+        bw.close();
+    }
 }
