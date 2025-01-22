@@ -18,7 +18,7 @@ class Solution {
         
         for(int i = 0; i < len; i++) {
             int size = index[i].size();
-            if (size > 0 && size * 2 > answer) {
+            if (size * 2 > answer) {
                 int cnt = 0;
                 boolean[] selected = new boolean[len];
                 for(int j = 0; j < size; j++) {
