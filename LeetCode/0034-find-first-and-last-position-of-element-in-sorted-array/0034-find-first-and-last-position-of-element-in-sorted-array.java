@@ -1,17 +1,25 @@
 class Solution {
     public int[] searchRange(int[] nums, int target) {
-        boolean flag = true;
+        boolean flag = false;
         int[] position = {-1, -1};
-
-        for(int i = 0; i < nums.length; i++) {
+        int i = 0;
+        while(i < nums.length) {
             if (nums[i] == target) {
-                if (flag) {
-                    position[0] = position[1] = i;
-                    flag = false;
-                } else {
-                    position[1] = i;
-                }
+                position[0] = position[1] = i;
+                flag = false;
+                break;
             }
+            i++;
+        }
+
+        i = nums.length - 1;
+        while(i >= 0) {
+            if (flag) break;
+            if (nums[i] == target) {
+                position[1] = i;
+                break;
+            }
+            i--;
         }
 
         return position;
