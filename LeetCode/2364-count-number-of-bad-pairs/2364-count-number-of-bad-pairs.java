@@ -1,9 +1,8 @@
 class Solution {
     public long countBadPairs(int[] nums) {
-        int len = nums.length;
         Map<Integer, Integer> map = new HashMap<>();
 
-        for(int i = 0; i < len; i++) {
+        for(int i = 0; i < nums.length; i++) {
             int key = i - nums[i];
             map.put(key, map.getOrDefault(key, 0) + 1);
         }
