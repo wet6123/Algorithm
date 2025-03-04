@@ -1,46 +1,39 @@
 import java.util.*;
+import java.lang.*;
 import java.io.*;
 
-public class Main{
+class Main {
     public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st = new StringTokenizer(br.readLine());
-		int N = Integer.parseInt(st.nextToken());
+        int N = Integer.parseInt(st.nextToken());
         int K = Integer.parseInt(st.nextToken());
-        
-        int[] visited = new int[100001];
-        visited[N] = 1;
-        Deque<Integer> dq = new ArrayDeque<>();
+
+        Deque<Integer> dq = new LinkedList<>();
         dq.add(N);
-        
-        while(dq.size() > 0){
-            int node = dq.remove();
-            int doubleNode = node * 2;
-            int plusNode = node + 1;
-            int minusNode = node - 1;
-            int value = visited[node];
-            
-            if(node == K){
-                bw.write((visited[K] - 1) + "");
-                bw.close();
+        int[] count = new int[100001];
+        for(int i = 0; i <= 100000; i++) count[i] = (int)1e9 + 7;
+        count[N] = 0;
+
+        while(!dq.isEmpty()) {
+            int num = dq.pollFirst();
+
+            if(num * 2 <= 100000 && count[num * 2] > count[num]) {
+                dq.addFirst(num * 2);
+                count[num * 2] = count[num];
             }
-            
-            if(doubleNode <= 100000 && visited[doubleNode] == 0){
-                dq.addFirst(doubleNode);
-                visited[doubleNode] = value;
+            if (num + 1 <= 100000 && count[num + 1] > count[num] + 1) {
+                dq.addLast(num + 1);
+                count[num + 1] = count[num] + 1;
             }
-            
-            if(plusNode <= 100000 && visited[plusNode] == 0){
-                dq.addLast(plusNode);
-                visited[plusNode] = value + 1;
+            if (num - 1 >= 0 && count[num - 1] > count[num] + 1) {
+                dq.addLast(num - 1);
+                count[num - 1] = count[num] + 1;
             }
-            
-            if(minusNode >= 0 && visited[minusNode] == 0){
-                dq.addLast(minusNode);
-                visited[minusNode] = value + 1;
-            }
-        }      
+        }
+
+        bw.write(count[K] + "");
+        bw.close();
     }
 }
