@@ -1,4 +1,5 @@
 import java.util.*;
+import java.io.*;
 
 class TreeNode {
     int id;                
@@ -13,10 +14,11 @@ public class Main {
     static TreeNode maxNode = null;
     static int maxSum = 0;
     
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         
-        int n = scanner.nextInt();
+        int n = Integer.parseInt(br.readLine());
         nodes = new TreeNode[n + 1];
         
         for (int i = 1; i <= n; i++) {
@@ -25,9 +27,10 @@ public class Main {
         }
         
         for (int i = 0; i < n - 1; i++) {
-            int parent = scanner.nextInt();
-            int child = scanner.nextInt();
-            int weight = scanner.nextInt();
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int parent = Integer.parseInt(st.nextToken());
+            int child = Integer.parseInt(st.nextToken());
+            int weight = Integer.parseInt(st.nextToken());
             
             nodes[child].weight = weight;
             nodes[parent].children.add(nodes[child]);
@@ -35,7 +38,11 @@ public class Main {
         
         findMaxPaths(nodes[1]);
         
-        System.out.println(maxSum);
+        bw.write(String.valueOf(maxSum));
+        bw.newLine();
+        
+        br.close();
+        bw.close();
     }
     
     static int findMaxPaths(TreeNode node) {
@@ -45,27 +52,26 @@ public class Main {
             return 0;
         }
         
-        List<Integer> childPaths = new ArrayList<>();
+        int max1 = 0;
+        int max2 = 0;
         
         for (TreeNode child : node.children) {
             findMaxPaths(child);
             
             int pathValue = Math.max(child.maxLeftPath, child.maxRightPath) + child.weight;
-            childPaths.add(pathValue);
+            
+            if (pathValue > max1) {
+                max2 = max1;
+                max1 = pathValue;
+            } else if (pathValue > max2) {
+                max2 = pathValue;
+            }
         }
         
-        Collections.sort(childPaths);
+        node.maxLeftPath = max1;
+        node.maxRightPath = max2;
         
-        int size = childPaths.size();
-        if (size >= 2) {
-            node.maxLeftPath = childPaths.get(size - 1);
-            node.maxRightPath = childPaths.get(size - 2);
-        } else if (size == 1) {
-            node.maxLeftPath = childPaths.get(0);
-            node.maxRightPath = 0;
-        }
-        
-        int sum = node.maxLeftPath + node.maxRightPath;
+        int sum = max1 + max2;
         if (sum > maxSum) {
             maxSum = sum;
             maxNode = node;
@@ -73,6 +79,4 @@ public class Main {
         
         return Math.max(node.maxLeftPath, node.maxRightPath);
     }
-    
-
 }
