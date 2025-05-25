@@ -3,19 +3,17 @@ import java.lang.*;
 import java.io.*;
 
 public class Main {
-    static int N;
     static int[][] map;
     static boolean[][] visited;
     static int[] dx = {0, -1, 1, 0};
     static int[] dy = {-1, 0, 0, 1};
-    static Queue<Coor> q = new LinkedList<>();
-    static int eat_cnt, shark_size, ans;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        N = Integer.parseInt(st.nextToken());
+        int N = Integer.parseInt(st.nextToken());
+        Queue<Coor> q = new LinkedList<>();
         map = new int[N][N];
         visited = new boolean[N][N];
         for(int i = 0; i < N; i++) {
@@ -31,15 +29,8 @@ public class Main {
                 }
             }
         }
-
-        eat_cnt = 0;
-        shark_size = 2;
-        ans = 0;
-        while(!q.isEmpty()) {
-            bfs();
-        }
         
-        bw.write(ans + "");
+        bw.write(bfs(N, q) + "");
         bw.close();
     }
 
@@ -52,21 +43,22 @@ public class Main {
         }
     }
 
-    private static void bfs() {
+    private static int bfs(int N, Queue<Coor> q) {
         int cnt = 0;
+        int eat_cnt = 0;
+        int shark_size = 2;
+        int ans = 0;
         while(!q.isEmpty()) {
             cnt++;
             int size = q.size();
             for(int q_cnt = 0; q_cnt < size; q_cnt++) {
                 Coor now = q.poll();
+                boolean cannot = false;
                 for(int i = 0; i < 4; i++) {
                     int nx = now.x + dx[i];
                     int ny = now.y + dy[i];
-                    if (nx < 0 || nx >= N || ny < 0 || ny >= N)
+                    if (nx < 0 || nx >= N || ny < 0 || ny >= N || visited[ny][nx] || map[ny][nx] > shark_size)
                         continue;
-                    if (visited[ny][nx] || map[ny][nx] > shark_size)
-                        continue;
-                    boolean cannot = false;
                     if (i == 3) {
                         for(int j = 1; j < 4; j++) {
                             int nnx = nx + dx[j];
@@ -95,11 +87,14 @@ public class Main {
                             q.offer(new Coor(nx, ny));
                             visited = new boolean[N][N];
                             visited[ny][nx] = true;
-                            return;
+                            cnt = 0;
+                            size = 0;
+                            break;
                         }
                     }
                 }
             }
         }
+        return ans;
     }
 }
